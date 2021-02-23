@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-pgsql-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-pgsql
+  template:
+    metadata:
+      labels:
+        app: auth-pgsql
+    spec:
+      containers:
+        - name: auth-pgsql
+          image: postgres
+          envFrom:
+            - configMapRef:
+                name: pgsql-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-pgsql-srv
+spec:
+  selector:
+    app: auth-pgsql
+  ports:
+    - name: db
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
