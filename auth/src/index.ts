@@ -1,6 +1,7 @@
 import express from 'express';
 import 'express-async-errors';
 import 'reflect-metadata';
+import path from 'path';
 import dotenv from 'dotenv';
 import { createConnection } from 'typeorm';
 import { json } from 'body-parser';
@@ -36,7 +37,12 @@ const start = async () => {
       port: Number(process.env.DB_PORT),
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
+      synchronize: true,
       database: 'auth',
+      entities: [path.join(__dirname, './entities/**/*.entity{.ts,.js}')],
+      cli: {
+        entitiesDir: path.join(__dirname, './entities'),
+      },
     });
   } catch (error) {
     console.log(error);

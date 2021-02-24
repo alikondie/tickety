@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
-import { User } from '../Entities/User.entity';
+import { User } from '../entities/User.entity';
+import { BadRequestError } from '../errors/bad-request';
 import { RequestValidationError } from '../errors/request-validation';
 import { TUser } from '../types/User';
 
@@ -26,16 +27,13 @@ router.post(
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      console.log('Email in use');
-      return res.send({});
+      throw new BadRequestError('This email is already in use');
     }
 
     const user = User.create({ email, password });
     await user.save();
 
     res.status(201).send(user);
-
-    res.send({});
   }
 );
 
