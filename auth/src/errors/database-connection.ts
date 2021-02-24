@@ -2,7 +2,7 @@ import { BaseError } from './base-error';
 
 export class DatabaseConnectionError extends BaseError {
   statusCode = 500;
-  reason = 'Error connecting to database :(';
+  message = 'Error connecting to database :(';
 
   constructor() {
     super('Error connecting to DB');
@@ -10,6 +10,6 @@ export class DatabaseConnectionError extends BaseError {
   }
 
   serializeErrors() {
-    return [{ message: this.reason }];
+    return [{ message: this.message }];
   }
 }
