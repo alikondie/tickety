@@ -1,40 +1,6 @@
-import express from 'express';
-import 'express-async-errors';
-import 'reflect-metadata';
 import path from 'path';
-import dotenv from 'dotenv';
 import { createConnection } from 'typeorm';
-import { json } from 'body-parser';
-import cookieSession from 'cookie-session';
-import { currentUserRouter } from './routes/current-user';
-import { signinRouter } from './routes/signin';
-import { signoutUser } from './routes/signout';
-import { singupUser } from './routes/signup';
-import { errorHandler } from './middlewares/error-handler';
-import { NotFoundError } from './errors/not-found';
-
-const app = express();
-app.set('trust proxy', true);
-dotenv.config();
-
-app.use(json());
-app.use(
-  cookieSession({
-    signed: false,
-    secure: true,
-  })
-);
-
-app.use(currentUserRouter);
-app.use(signinRouter);
-app.use(signoutUser);
-app.use(singupUser);
-
-app.all('*', () => {
-  throw new NotFoundError();
-});
-
-app.use(errorHandler);
+import { app } from './app';
 
 const start = async () => {
   if (!process.env.JWT_SECRET) {
@@ -58,6 +24,7 @@ const start = async () => {
   } catch (error) {
     console.log(error);
   }
+
   app.listen(3000, () => {
     console.log('*-- (auth) --* listening on port 3000');
   });
