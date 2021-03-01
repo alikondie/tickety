@@ -8,11 +8,21 @@ build:
   local:
     push: false
   artifacts:
-    - image: alikondie/tickety/auth
+    - image: alikondie/auth
       context: auth
       docker:
         dockerfile: Dockerfile
       sync:
         manual:
           - src: 'src/**/*.ts'
+            dest: .
+    - image: alikondie/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '**/*.ts'
+            dest: .
+          - src: '**/*.tsx'
             dest: .
