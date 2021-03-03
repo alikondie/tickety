@@ -1,8 +1,9 @@
 import express, { Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
-import { User } from '../Entities/User.entity';
-import { RequestValidationError } from '../errors/request-validation';
-import { TUser } from '../types/User';
+import jwt from 'jsonwebtoken';
+import { body } from 'express-validator';
+import { User } from '../entities/User.entity';
+import { BadRequestError } from '../errors/bad-request';
+import { validateRequest } from '../middlewares/validate-request';
 
 const router = express.Router();
 
@@ -15,27 +16,30 @@ router.post(
       .isLength({ min: 4, max: 20 })
       .withMessage('Password must be between 4 and 20 characters'),
   ],
-  async (req: Request<TUser>, res: Response) => {
-    const errors = validationResult(req);
-
-    if (!errors.isEmpty()) {
-      throw new RequestValidationError(errors.array());
-    }
+  validateRequest,
+  async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      console.log('Email in use');
-      return res.send({});
+      throw new BadRequestError('This email is already in use');
     }
 
     const user = User.create({ email, password });
     await user.save();
 
-    res.status(201).send(user);
-
-    res.send({});
+    const userJwt = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      process.env.JWT_SECRET!
+    );
+    req.session = {
+      jwt: userJwt,
+    };
+    res.status(201).send({ email, id: user.id });
   }
 );
 
