@@ -2,8 +2,7 @@ import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { body } from 'express-validator';
 import { User } from '../entities/User.entity';
-import { BadRequestError } from '../errors/bad-request';
-import { validateRequest } from '../middlewares/validate-request';
+import { BadRequestError, validateRequest } from '@tiktaktickety/common';
 
 const router = express.Router();
 

@@ -10,8 +10,7 @@ import { currentUserRouter } from './routes/current-user';
 import { signinRouter } from './routes/signin';
 import { signoutUser } from './routes/signout';
 import { singupUser } from './routes/signup';
-import { errorHandler } from './middlewares/error-handler';
-import { NotFoundError } from './errors/not-found';
+import { errorHandler, NotFoundError } from '@tiktaktickety/common';
 
 const app = express();
 app.set('trust proxy', true);

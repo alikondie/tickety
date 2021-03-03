@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { ForbiddenError } from '../errors/forbidden';
+import { ForbiddenError } from '@tiktaktickety/common';
 
 export const requireAuth = (
   req: Request,
